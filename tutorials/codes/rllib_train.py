@@ -73,7 +73,7 @@ if __name__ == "__main__":
 
 	ENV_NAME = "MountainCarContinuous-v0"
 	MAX_TRAIN_ITERATIONS = 200
-	EPISODE_REWARD_AVG_SOLVED = 100.0
+	EPISODE_REWARD_AVG_SOLVED = 95.0
 
 	# ALGORITHM = "DQN"
 	ALGORITHM = "PPO"
