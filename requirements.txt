@@ -1,0 +1,13 @@
+ray[rllib] >= 2.0.0
+
+matplotlib
+numpy
+pandas
+tensorboard
+torch
+tqdm
+jupyterlab
+pygame
+wandb
+gym[atari]
+autorom[accept-rom-license]
