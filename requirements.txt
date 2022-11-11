@@ -11,3 +11,4 @@ pygame
 wandb
 gym[atari]
 autorom[accept-rom-license]
+scikit-image
