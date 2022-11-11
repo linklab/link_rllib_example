@@ -9,16 +9,16 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 if __name__ == "__main__":
-	ENV_NAME = "CartPole-v1"
+	# ENV_NAME = "CartPole-v1"
 	# ENV_NAME = "Taxi-v3"
 	# ENV_NAME = "PongDeterministic-v0"
-	# ENV_NAME = "MountainCarContinuous-v0"
+	ENV_NAME = "MountainCarContinuous-v0"
 
 	# ALGORITHM = "DQN"
 	ALGORITHM = "PPO"
 	# ALGORITHM = "SAC"
 
-	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_CartPole-v1_2022-11-06_23-05-02r8afgymm/checkpoint_000013"
+	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_MountainCarContinuous-v0_2022-11-07_00-19-04q40ekk4b/checkpoint_000016"
 
 	ray_info = ray.init(log_to_driver=True)
 

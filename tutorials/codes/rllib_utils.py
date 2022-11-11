@@ -1,30 +1,30 @@
 def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     if algorithm == "DQN":
-        from ray.rllib.agents.dqn import DEFAULT_CONFIG
-        ray_config = DEFAULT_CONFIG.copy()
+        from ray.rllib.algorithms.dqn import DQNConfig
+        ray_config = DQNConfig()
     elif algorithm == "PPO":
-        from ray.rllib.agents.ppo import DEFAULT_CONFIG
-        ray_config = DEFAULT_CONFIG.copy()
+        from ray.rllib.algorithms.ppo import PPOConfig
+        ray_config = PPOConfig()
     elif algorithm == "SAC":
-        from ray.rllib.agents.sac import DEFAULT_CONFIG
-        ray_config = DEFAULT_CONFIG.copy()
+        from ray.rllib.algorithms.sac import SACConfig
+        ray_config = SACConfig()
     else:
         raise ValueError()
 
-    ray_config["framework"] = "torch"
-    ray_config["num_workers"] = num_workers
-    ray_config["evaluation_interval"] = 1  # 평가를 위한 훈련 간격
-    ray_config["evaluation_duration"] = 5  # 평가를 위한 에피소드 개수
+    ray_config.framework_str = "torch"
+    ray_config.num_workers = num_workers
+    ray_config.evaluation_interval = 1  # 평가를 위한 훈련 간격
+    ray_config.evaluation_duration = 5  # 평가를 위한 에피소드 개수
 
     if algorithm == "DQN":
-        from ray.rllib.agents.dqn import DQNTrainer
-        ray_agent = DQNTrainer(ray_config, env_name)
+        from ray.rllib.algorithms.dqn import DQN
+        ray_agent = DQN(ray_config, env_name)
     elif algorithm == "PPO":
-        from ray.rllib.agents.ppo import PPOTrainer
-        ray_agent = PPOTrainer(ray_config, env_name)
+        from ray.rllib.algorithms.ppo import PPO
+        ray_agent = PPO(ray_config, env_name)
     elif algorithm == "SAC":
-        from ray.rllib.agents.sac import SACTrainer
-        ray_agent = SACTrainer(ray_config, env_name)
+        from ray.rllib.algorithms.sac import SAC
+        ray_agent = SAC(ray_config, env_name)
     else:
         raise ValueError()
 

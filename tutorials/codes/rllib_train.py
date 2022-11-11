@@ -6,7 +6,7 @@ import ray
 import wandb
 from datetime import datetime
 from tutorials.codes.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
-
+import gym
 
 class RAY_RL:
 	def __init__(self, env_name, ray_config, ray_agent, max_train_iterations, episode_reward_avg_solved, use_wandb):
@@ -59,6 +59,9 @@ class RAY_RL:
 
 
 if __name__ == "__main__":
+	print("RAY VERSION: {0}".format(ray.__version__))
+	print("GYM VERSION: {0}".format(gym.__version__))
+
 	# ENV_NAME = "CartPole-v1"
 	# MAX_TRAIN_ITERATIONS = 100
 	# EPISODE_REWARD_AVG_SOLVED = 500
@@ -73,15 +76,15 @@ if __name__ == "__main__":
 
 	ENV_NAME = "MountainCarContinuous-v0"
 	MAX_TRAIN_ITERATIONS = 200
-	EPISODE_REWARD_AVG_SOLVED = 95.0
+	EPISODE_REWARD_AVG_SOLVED = 100.0
 
 	# ALGORITHM = "DQN"
-	ALGORITHM = "PPO"
-	# ALGORITHM = "SAC"
+	# ALGORITHM = "PPO"
+	ALGORITHM = "SAC"
 
 	ray_info = ray.init(log_to_driver=False)
 
-	ray_config, ray_agent = get_ray_config_and_ray_agent(algorithm=ALGORITHM, env_name=ENV_NAME, num_workers=3)
+	ray_config, ray_agent = get_ray_config_and_ray_agent(algorithm=ALGORITHM, env_name=ENV_NAME, num_workers=1)
 
 	print(ray_agent.get_policy().model)
 	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy().observation_space)))
