@@ -57,7 +57,7 @@ class RAY_RL:
 
 			episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
 
-			if episode_reward_mean >= self.episode_reward_avg_solved:
+			if episode_reward_mean >= self.episode_reward_avg_solved and num_optimizations > 50_000:
 				checkpoint_path = ray_agent.save()
 				print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
 					iter_result["evaluation"]["episode_reward_mean"],
@@ -71,7 +71,7 @@ if __name__ == "__main__":
 	print("RAY VERSION: {0}".format(ray.__version__))
 	print("GYM VERSION: {0}".format(gym.__version__))
 
-	ray_info = ray.init(log_to_driver=False)
+	ray_info = ray.init(local_mode=True, log_to_driver=False)
 
 	ray_config, ray_agent = get_ray_config_and_ray_agent(algorithm=ALGORITHM, env_name=ENV_NAME, num_workers=1)
 
