@@ -9,6 +9,9 @@ tqdm
 jupyterlab
 pygame
 wandb
+swig
+box2d-py
 gym[atari]
+gym[Box_2D]
 autorom[accept-rom-license]
 scikit-image

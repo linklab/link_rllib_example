@@ -1,4 +1,3 @@
-import gym
 import ray
 import warnings
 
@@ -7,17 +6,10 @@ from tutorials.codes.rllib_train import get_ray_config_and_ray_agent
 warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+from tutorials.codes.rllib_algorithm import ALGORITHM
+from tutorials.codes.rllib_environment import ENV_NAME
 
 if __name__ == "__main__":
-	# ENV_NAME = "CartPole-v1"
-	# ENV_NAME = "Taxi-v3"
-	# ENV_NAME = "PongDeterministic-v0"
-	ENV_NAME = "MountainCarContinuous-v0"
-
-	# ALGORITHM = "DQN"
-	ALGORITHM = "PPO"
-	# ALGORITHM = "SAC"
-
 	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_MountainCarContinuous-v0_2022-11-07_00-19-04q40ekk4b/checkpoint_000016"
 
 	ray_info = ray.init(log_to_driver=True)

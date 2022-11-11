@@ -5,6 +5,9 @@ def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     elif algorithm == "PPO":
         from ray.rllib.algorithms.ppo import PPOConfig
         ray_config = PPOConfig()
+    elif algorithm == "DDPG":
+        from ray.rllib.algorithms.ddpg import DDPGConfig
+        ray_config = DDPGConfig()
     elif algorithm == "SAC":
         from ray.rllib.algorithms.sac import SACConfig
         ray_config = SACConfig()
@@ -22,6 +25,9 @@ def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     elif algorithm == "PPO":
         from ray.rllib.algorithms.ppo import PPO
         ray_agent = PPO(ray_config, env_name)
+    elif algorithm == "DDPG":
+        from ray.rllib.algorithms.ddpg import DDPG
+        ray_agent = DDPG(ray_config, env_name)
     elif algorithm == "SAC":
         from ray.rllib.algorithms.sac import SAC
         ray_agent = SAC(ray_config, env_name)
