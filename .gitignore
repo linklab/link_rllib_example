@@ -132,4 +132,3 @@ dmypy.json
 my_codes
 wandb/*
 /tutorials/codes/wandb/
-/unity
