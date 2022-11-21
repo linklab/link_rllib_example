@@ -58,7 +58,7 @@ class RandomWalk(gym.Env):
         self.observation_space = Box(low=0.0, high=1.0, shape=(self.num_internal_states,))
         self.num_steps = 0
 
-    def reset(self):
+    def reset(self, **kwargs):
         self.num_steps = 0
         self.current_position = int(self.num_internal_states / 2)
         self.current_state = self.STATES[self.current_position]
