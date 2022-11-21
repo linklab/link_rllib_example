@@ -1,13 +1,13 @@
 import ray
 import warnings
 
-from tutorials.codes.rllib_train import get_ray_config_and_ray_agent
+from tutorials.codes.single_agent.rllib_train import get_ray_config_and_ray_agent
 
 warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-from tutorials.codes.rllib_algorithm import ALGORITHM
-from tutorials.codes.rllib_environment import ENV_NAME
+from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
+from tutorials.codes.single_agent.rllib_environment import ENV_NAME
 
 if __name__ == "__main__":
 	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-11_19-28-17g5z7t089/checkpoint_000005"
