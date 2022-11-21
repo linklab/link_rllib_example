@@ -126,7 +126,6 @@ def run_env():
     agent = Dummy_Agent()
     env = TicTacToe()
     observation = env.reset()
-    env.render()
 
     done = dict()
     done["__all__"] = False
@@ -137,7 +136,6 @@ def run_env():
         turn = list(observation.keys())[0]
         action = {turn: action}
         next_observation, reward, done, info = env.step(action)
-        env.render()
 
         print("[Step: {0:3}] Obs.: {1:>2}, Action: {2}, Next Obs.: {3}, Reward: {4}, Done: {5}, Info: {6}".format(
             episode_step, str(observation), action, str(next_observation), reward, done, info

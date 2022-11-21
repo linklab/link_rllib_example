@@ -32,7 +32,7 @@ if __name__ == "__main__":
 
     while True:
         results = trainer.train()
-        print(pretty_print(results))
+        #print(pretty_print(results))
 
         if results["episode_reward_mean"] > mean_reward_threshold and results["episode_len_mean"] > best_eps_len:
             trainer.save("ttt_model")
