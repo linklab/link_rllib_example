@@ -132,3 +132,5 @@ dmypy.json
 my_codes
 wandb/*
 /tutorials/codes/wandb/
+/unity/config.py
+/unity/unity_test.py
