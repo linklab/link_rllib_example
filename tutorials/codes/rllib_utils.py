@@ -1,4 +1,4 @@
-def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
+def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1):
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQNConfig
         ray_config = DQNConfig()
@@ -18,6 +18,7 @@ def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     ray_config.num_workers = num_workers
     ray_config.evaluation_interval = 1  # 평가를 위한 훈련 간격
     ray_config.evaluation_duration = 5  # 평가를 위한 에피소드 개수
+    ray_config.env_config = env_config
 
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQN
