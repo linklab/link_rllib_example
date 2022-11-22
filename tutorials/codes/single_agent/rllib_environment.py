@@ -49,7 +49,13 @@ from tutorials.codes.custom_env.random_walk import RandomWalk
 
 
 
-# ENV_NAME = "BipedalWalker-v3"
+ENV_NAME = "BipedalWalker-v3"
+MAX_TRAIN_ITERATIONS = 100
+EPISODE_REWARD_AVG_SOLVED = 250
+
+
+
+# ENV_NAME = "BipedalWalkerHardcore-v3"
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 250
 
@@ -59,19 +65,19 @@ from tutorials.codes.custom_env.random_walk import RandomWalk
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 100
 
-env_config = {
-	"file_name": "/Users/zero/PycharmProjects/link_rllib_example/unity_env/Kart_Darwin",
-	"episode_horizon": 1000,
-}
-from ray.rllib.env import Unity3DEnv
-register_env(
-	"Kart_Darwin",
-	lambda c: Unity3DEnv(
-		file_name=env_config["file_name"],
-		no_graphics=False,
-		episode_horizon=env_config["episode_horizon"],
-	)
-)
-ENV_NAME = "Kart_Darwin"
-MAX_TRAIN_ITERATIONS = 100
-EPISODE_REWARD_AVG_SOLVED = 1.0
+# env_config = {
+# 	"file_name": "/Users/zero/PycharmProjects/link_rllib_example/unity_env/Kart_Darwin",
+# 	"episode_horizon": 1000,
+# }
+# from ray.rllib.env import Unity3DEnv
+# register_env(
+# 	"Kart_Darwin",
+# 	lambda c: Unity3DEnv(
+# 		file_name=env_config["file_name"],
+# 		no_graphics=False,
+# 		episode_horizon=env_config["episode_horizon"],
+# 	)
+# )
+# ENV_NAME = "Kart_Darwin"
+# MAX_TRAIN_ITERATIONS = 100
+# EPISODE_REWARD_AVG_SOLVED = 1.0
