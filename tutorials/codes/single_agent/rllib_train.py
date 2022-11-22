@@ -6,7 +6,7 @@ import ray
 import wandb
 from datetime import datetime
 
-from tutorials.codes.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
+from tutorials.codes.single_agent.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
 from tutorials.codes.single_agent.rllib_environment import ENV_NAME, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED
 
