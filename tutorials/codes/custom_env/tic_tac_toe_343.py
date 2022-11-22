@@ -2,7 +2,9 @@ import time
 
 import gym
 import numpy as np
-from gym.spaces import Discrete, MultiDiscrete
+from gym import spaces
+from ray.rllib import MultiAgentEnv
+from ray.rllib.env import EnvContext
 
 from tutorials.codes.multi_agents.agents.a_dummy_agent import Dummy_Agents
 
@@ -10,8 +12,6 @@ PLAYER_TO_SYMBOL = [' ', 'O', 'X']
 PLAYER_1_INT = 1
 PLAYER_2_INT = 2
 
-BOARD_ROWS = 3
-BOARD_COLS = 4
 
 #########################################################
 ##  (0,0) -> 0, (0,1) ->  1, (0,2) ->  2, (0,3) ->  3  ##
@@ -35,7 +35,7 @@ def action_idx_to_position(idx):
 # 게임판 상태의 저장, 출력 그리고 종료 판정을 수행하는 State 클래스   #
 #########################################################
 class State:
-    def __init__(self, board_rows=BOARD_ROWS, board_cols=BOARD_COLS):
+    def __init__(self, board_rows=3, board_cols=4):
         # 게임판 상태는 board_rows * board_cols 크기의 배열로 표현
         # 게임판에서 플레이어는 정수값으로 구분
         # 1 : 선공 플레이어, -1 : 후공 플레이어, 0 : 초기 공백 상태
@@ -124,9 +124,15 @@ class State:
 
 ################################################################
 # 플레이어 1,2 간의 게임 진행을 담당하는 Env 클래스
-class TicTacToe343(gym.Env):
-    def __init__(self, env_config: dict):
+class TicTacToe343(MultiAgentEnv):
+    def __init__(self, env_config: EnvContext = None):
+        super().__init__()
         self.__version__ = "0.0.1"
+        if env_config is None:
+            env_config = {
+                "board_rows": 3,
+                "board_cols": 4
+            }
         self.env_config = env_config
 
         self.BOARD_SIZE = self.env_config["board_rows"] * self.env_config["board_cols"]
@@ -135,8 +141,8 @@ class TicTacToe343(gym.Env):
         self.current_agent = None
         self.ALL_ACTIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 
-        self.action_space = Discrete(n=len(self.ALL_ACTIONS))
-        self.observation_space = MultiDiscrete(nvec=[3] * self.BOARD_SIZE)
+        self.action_space = spaces.Discrete(n=len(self.ALL_ACTIONS))
+        self.observation_space = spaces.Box(0.0, 2.0, (self.BOARD_SIZE,), float)
 
         # 초기 상태 설정
         self.INITIAL_STATE = State(board_rows=self.env_config["board_rows"], board_cols=self.env_config["board_cols"])
@@ -203,7 +209,9 @@ class TicTacToe343(gym.Env):
                         'O': -1.0, 'X': 1.0
                     }
                 else:
-                    raise ValueError()
+                    rewards = {
+                        'O': 0.0, 'X': 0.0
+                    }
 
                 infos = {
                     'O': {'winner': next_state.winner},
@@ -223,13 +231,17 @@ class TicTacToe343(gym.Env):
 
                 next_observations = {self.current_agent: self.current_state.data.flatten()}
                 rewards = {self.current_agent: 0.0}
-                infos = {self.current_agent: self.current_state.get_available_actions()}
+                infos = {
+                    self.current_agent: {}
+                }
         else:
             # 이미 돌이 두어진 자리에 다시 돌을 두려고 시도할 때, 동일한 에이전트에게 정보 전달
             next_observations = {self.current_agent: self.current_state.data.flatten()}
             rewards = {self.current_agent: -10.0}
             finish = False
-            infos = {self.current_agent: self.current_state.get_available_actions()}
+            infos = {
+                self.current_agent: {}
+            }
 
         assert self.steps <= 12
 
@@ -257,18 +269,14 @@ class TicTacToe343(gym.Env):
         for i in range(self.env_config["board_rows"]):
             print('-------------')
             out = '| '
-            for j in range(BOARD_COLS):
+            for j in range(self.env_config["board_cols"]):
                 out += str(position_to_action_idx(i, j)) + ' | '
             print(out)
         print('-------------')
 
 
 def main():
-    env_config = {
-        "board_rows": 3,
-        "board_cols": 4
-    }
-    env = TicTacToe343(env_config=env_config)
+    env = TicTacToe343()
 
     observations = env.reset()
 

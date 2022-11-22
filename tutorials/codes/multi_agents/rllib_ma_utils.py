@@ -3,7 +3,7 @@ from ray.rllib.env import Unity3DEnv
 from ray.rllib.policy.policy import PolicySpec
 
 
-def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
+def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1):
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQNConfig
         ray_config = DQNConfig()
@@ -24,51 +24,71 @@ def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     ray_config.evaluation_interval = 1  # 평가를 위한 훈련 간격
     ray_config.evaluation_duration = 5  # 평가를 위한 에피소드 개수
 
+    ray_config.env_config = env_config
+
     if env_name == "3DBall":
         policies, policy_mapping_fn = Unity3DEnv.get_policy_configs_for_game(env_name)
     elif env_name == "Kart":
-        observation_space = spaces.Box(low=-10_000, high=10_000, shape=(48,))
-        action_space = spaces.Box(low=-10_000, high=10_000, shape=(1,))
         policies = {
             "Kart": PolicySpec(
-                observation_space=observation_space, action_space=action_space,
+                observation_space=spaces.Box(low=-10_000, high=10_000, shape=(48,)),
+                action_space=spaces.Box(low=-10_000, high=10_000, shape=(1,)),
             ),
         }
         def policy_mapping_fn(agent_id, episode, worker, **kwargs):
             return "Kart"
     elif env_name == "TicTacToe343":
-        pass
+        policies = {
+            "policy_O": PolicySpec(
+                observation_space=spaces.Box(0.0, 2.0, (12,), float),
+                action_space=spaces.Discrete(n=12)
+            ),
+            "policy_X": PolicySpec(
+                observation_space=spaces.Box(0.0, 2.0, (12,), float),
+                action_space=spaces.Discrete(n=12)
+            ),
+        }
+        def policy_mapping_fn(agent_id, episode, worker, **kwargs):
+            if agent_id == "O":
+                return "policy_O"
+            elif agent_id == "X":
+                return "policy_X"
+            else:
+                raise ValueError()
     else:
         raise ValueError()
 
-    ray_config.multi_agent(policies=policies, policy_mapping_fn=policy_mapping_fn)
+    ray_config.multi_agent(
+        policies=policies, policy_mapping_fn=policy_mapping_fn
+    )
     ray_config.disable_env_checking = True
+    ray_config.policies_to_train = ["policy_O"]
 
-    ray_config.rollouts(
-        num_rollout_workers=0,
-        no_done_at_end=True,
-        rollout_fragment_length=200,
-    )
-    ray_config.training(
-        lr=0.0003,
-        lambda_=0.95,
-        gamma=0.99,
-        sgd_minibatch_size=256,
-        train_batch_size=4000,
-        num_sgd_iter=20,
-        clip_param=0.2,
-        model={"fcnet_hiddens": [512, 512]}
-    )
-    ray_config.resources(num_gpus=int("0"))
-
-    ray_config.environment(
-        "3DBall",
-        env_config={
-            "file_name": "/Users/zero/PycharmProjects/link_rllib_example/unity_env/3DBall_Darwin",
-            "episode_horizon": 1000,
-        },
-        disable_env_checking=True
-    )
+    # ray_config.rollouts(
+    #     num_rollout_workers=0,
+    #     no_done_at_end=True,
+    #     rollout_fragment_length=200,
+    # )
+    # ray_config.training(
+    #     lr=0.0003,
+    #     lambda_=0.95,
+    #     gamma=0.99,
+    #     sgd_minibatch_size=256,
+    #     train_batch_size=4000,
+    #     num_sgd_iter=20,
+    #     clip_param=0.2,
+    #     model={"fcnet_hiddens": [512, 512]}
+    # )
+    # ray_config.resources(num_gpus=int("0"))
+    #
+    # ray_config.environment(
+    #     "3DBall",
+    #     env_config={
+    #         "file_name": "/Users/zero/PycharmProjects/link_rllib_example/unity_env/3DBall_Darwin",
+    #         "episode_horizon": 1000,
+    #     },
+    #     disable_env_checking=True
+    # )
 
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQN
@@ -88,10 +108,11 @@ def get_ray_config_and_ray_agent(algorithm, env_name, num_workers=1):
     return ray_config, ray_agent
 
 
-def print_iter_result(iter_result, optimizations):
-    prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts.: {3:>6,d}".format(
-        iter_result["training_iteration"], iter_result["episodes_total"],
-        iter_result["timesteps_total"], int(optimizations)
+def print_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X):
+    print(iter_result)
+    prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts (policy_O).: {3:>6,d} | opts (policy_O).: {4:>6,d}".format(
+        iter_result["training_iteration"], iter_result["episodes_total"], iter_result["timesteps_total"],
+        int(num_optimizations_policy_O), int(num_optimizations_policy_X)
     )
 
     episode_reward = "epi_reward(mean/min/max): {0:>6.2f}/{1:>6.2f}/{2:>6.2f}".format(

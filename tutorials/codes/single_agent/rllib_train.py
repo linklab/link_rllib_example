@@ -8,7 +8,10 @@ from datetime import datetime
 
 from tutorials.codes.single_agent.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
-from tutorials.codes.single_agent.rllib_environment import ENV_NAME, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED
+from tutorials.codes.single_agent.rllib_environment import ENV_NAME
+from tutorials.codes.single_agent.rllib_environment import ENV_CONFIG
+from tutorials.codes.single_agent.rllib_environment import MAX_TRAIN_ITERATIONS
+from tutorials.codes.single_agent.rllib_environment import EPISODE_REWARD_AVG_SOLVED
 
 import gym
 
@@ -71,7 +74,7 @@ if __name__ == "__main__":
 	print("RAY VERSION: {0}".format(ray.__version__))
 	print("GYM VERSION: {0}".format(gym.__version__))
 
-	ray_info = ray.init(local_mode=True, log_to_driver=False)
+	ray_info = ray.init(local_mode=True)
 
 	ray_config, ray_agent = get_ray_config_and_ray_agent(
 		algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1

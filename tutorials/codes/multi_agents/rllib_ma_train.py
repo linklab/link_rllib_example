@@ -6,11 +6,15 @@ import ray
 import wandb
 from datetime import datetime
 
-from tutorials.codes.multi_agents.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
-from tutorials.codes.multi_agents.rllib_algorithm import ALGORITHM
-from tutorials.codes.multi_agents.rllib_environment import ENV_NAME, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED
+from tutorials.codes.multi_agents.rllib_ma_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
+from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM
+from tutorials.codes.multi_agents.rllib_ma_environment import ENV_NAME
+from tutorials.codes.multi_agents.rllib_ma_environment import ENV_CONFIG
+from tutorials.codes.multi_agents.rllib_ma_environment import MAX_TRAIN_ITERATIONS
+from tutorials.codes.multi_agents.rllib_ma_environment import EPISODE_REWARD_AVG_SOLVED
 
 import gym
+
 
 class RAY_RL:
 	def __init__(
@@ -35,22 +39,22 @@ class RAY_RL:
 			)
 
 	def train_loop(self):
-		num_optimizations = 0
+		num_optimizations_policy_O = 0
+		num_optimizations_policy_X = 0
 
 		for num_train in range(self.max_train_iterations):
 			iter_result = self.ray_agent.train()
 
 			# from pprint import pprint
 			# pprint(iter_result)
-			if "num_agent_steps_trained" in iter_result["info"]:
-				num_optimizations += iter_result["info"]["num_agent_steps_trained"]
-			else:
-				if "default_policy" in iter_result["info"]["learner"]:
-					num_optimizations += iter_result["info"]["learner"]["default_policy"]["num_agent_steps_trained"]
-				else:
-					num_optimizations += 0
+			if "policy_O" in iter_result["info"]["learner"]:
+				num_optimizations_policy_O += iter_result["info"]["learner"]["policy_O"]["num_agent_steps_trained"]
 
-			print_iter_result(iter_result, num_optimizations)
+			if "policy_X" in iter_result["info"]["learner"]:
+				num_optimizations_policy_O += iter_result["info"]["learner"]["policy_X"]["num_agent_steps_trained"]
+
+
+			print_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
 
 			if self.use_wandb:
 				log_wandb(iter_result, num_optimizations)
@@ -71,13 +75,21 @@ if __name__ == "__main__":
 	print("RAY VERSION: {0}".format(ray.__version__))
 	print("GYM VERSION: {0}".format(gym.__version__))
 
-	ray_info = ray.init()
+	ray_info = ray.init(local_mode=True)
 
-	ray_config, ray_agent = get_ray_config_and_ray_agent(algorithm=ALGORITHM, env_name=ENV_NAME, num_workers=1)
+	ray_config, ray_agent = get_ray_config_and_ray_agent(
+		algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1
+	)
 
-	print(ray_agent.get_policy().model)
-	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy().observation_space)))
-	print("ACTION SPACE: {0}".format(str(ray_agent.get_policy().action_space)))
+	print("#" * 128)
+	print(ray_agent.get_policy(policy_id="policy_O").model)
+	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy(policy_id="policy_O").observation_space)))
+	print("ACTION SPACE: {0}".format(str(ray_agent.get_policy(policy_id="policy_O").action_space)))
+
+	print("#" * 128)
+	print(ray_agent.get_policy(policy_id="policy_X").model)
+	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy(policy_id="policy_X").observation_space)))
+	print("ACTION SPACE: {0}".format(str(ray_agent.get_policy(policy_id="policy_X").action_space)))
 
 	ray_rl = RAY_RL(
 		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
