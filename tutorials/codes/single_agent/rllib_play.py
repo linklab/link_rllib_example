@@ -32,7 +32,9 @@ if __name__ == "__main__":
 			cumulative_reward += reward
 			env.render(mode="human")
 
-		print(cumulative_reward)
+		print("[EPISODE: {0}] - Cumulative Reward: {1:.2f}".format(
+			epsiode, cumulative_reward
+		))
 		print()
 
 	ray.shutdown()
