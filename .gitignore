@@ -134,3 +134,5 @@ wandb/*
 /tutorials/codes/wandb/
 /unity/config.py
 /unity/unity_test.py
+/tutorials/codes/single_agents/wandb
+/tutorials/codes/multi_agents/wandb
