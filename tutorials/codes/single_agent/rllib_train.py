@@ -53,7 +53,7 @@ class RAY_RL:
 			print_iter_result(iter_result, num_optimizations)
 
 			if self.use_wandb:
-				log_wandb(iter_result, num_optimizations)
+				log_wandb(wandb, iter_result, num_optimizations)
 
 			episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
 
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 	ray_rl = RAY_RL(
 		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
 		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_avg_solved=EPISODE_REWARD_AVG_SOLVED,
-		use_wandb=False
+		use_wandb=True
 	)
 
 	ray_rl.train_loop()
