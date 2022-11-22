@@ -1,0 +1,42 @@
+{
+    "os": "macOS-10.16-x86_64-i386-64bit",
+    "python": "3.9.13",
+    "heartbeatAt": "2022-11-22T02:25:23.760574",
+    "startedAt": "2022-11-22T02:25:23.085379",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/yhhan/git/link_rllib_example/tutorials/codes/single_agent/rllib_train.py",
+    "codePath": "tutorials/codes/single_agent/rllib_train.py",
+    "git": {
+        "remote": "git@github.com:linklab/link_rllib_example.git",
+        "commit": "0d67e5dc22b87328e985600d2d7ea7144a6df5e0"
+    },
+    "email": "yh21.han@gmail.com",
+    "root": "/Users/yhhan/git/link_rllib_example",
+    "host": "Youn-Heeui-iMac.local",
+    "username": "yhhan",
+    "executable": "/Users/yhhan/opt/anaconda3/envs/link_rllib_example/bin/python",
+    "cpu_count": 4,
+    "cpu_count_logical": 8,
+    "cpu_freq": {
+        "current": 4000,
+        "min": 4000,
+        "max": 4000
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4000,
+            "min": 4000,
+            "max": 4000
+        }
+    ],
+    "disk": {
+        "total": 931.6446495056152,
+        "used": 23.693904876708984
+    },
+    "memory": {
+        "total": 16.0
+    }
+}
