@@ -89,10 +89,11 @@ def log_wandb(wandb, iter_result, optimizations):
         "evaluation/episode_length_mean": iter_result["evaluation"]["episode_len_mean"],
     }
 
-    if 'mean_td_error' in iter_result["info"]["learner"]["default_policy"]:
-        log_dict["loss"] = iter_result["info"]["learner"]["default_policy"]["mean_td_error"]
-    else:
-        log_dict["loss"] = iter_result["info"]["learner"]["default_policy"]["learner_stats"]["total_loss"]
+    if "default_policy" in iter_result["info"]["learner"]:
+        if 'mean_td_error' in iter_result["info"]["learner"]["default_policy"]:
+            log_dict["loss"] = iter_result["info"]["learner"]["default_policy"]["mean_td_error"]
+        else:
+            log_dict["loss"] = iter_result["info"]["learner"]["default_policy"]["learner_stats"]["total_loss"]
 
     wandb.log(log_dict)
 
