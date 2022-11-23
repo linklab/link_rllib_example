@@ -50,8 +50,7 @@ class RAY_RL:
 				num_optimizations_policy_O += iter_result["info"]["learner"]["policy_O"]["num_agent_steps_trained"]
 
 			if "policy_X" in iter_result["info"]["learner"]:
-				num_optimizations_policy_O += iter_result["info"]["learner"]["policy_X"]["num_agent_steps_trained"]
-
+				num_optimizations_policy_X += iter_result["info"]["learner"]["policy_X"]["num_agent_steps_trained"]
 
 			print_ttt_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
 

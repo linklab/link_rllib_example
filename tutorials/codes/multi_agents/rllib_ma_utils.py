@@ -43,6 +43,11 @@ def get_ray_config_and_ray_agent(algorithm_policy_o, algorithm_policy_x, env_nam
         from ray.rllib.algorithms.sac import SACTorchPolicy
         ray_config_policy_x = SACConfig()
         ray_policy_policy_x = SACTorchPolicy
+    elif algorithm_policy_x == "Dummy":
+        from ray.rllib.algorithms.sac import SACConfig
+        from ray.rllib.algorithms.sac import SACTorchPolicy
+        ray_config_policy_x = SACConfig()
+        ray_policy_policy_x = SACTorchPolicy
     else:
         raise ValueError()
 
