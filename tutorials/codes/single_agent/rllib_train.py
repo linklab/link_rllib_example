@@ -56,7 +56,7 @@ class RAY_RL:
 			print_iter_result(iter_result, num_optimizations)
 
 			if self.use_wandb:
-				log_wandb(wandb, iter_result, num_optimizations)
+				log_wandb(self.wandb, iter_result, num_optimizations)
 
 			episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
 

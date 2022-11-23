@@ -6,9 +6,9 @@ import ray
 import wandb
 from datetime import datetime
 
-from tutorials.codes.multi_agents.rllib_ma_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
-from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM
-from tutorials.codes.multi_agents.rllib_ma_environment import ENV_NAME
+from tutorials.codes.multi_agents.rllib_ma_utils import get_ray_config_and_ray_agent, print_ttt_iter_result, log_ttt_wandb
+from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM_POLICY_O, ALGORITHM_POLICY_X
+from tutorials.codes.multi_agents.rllib_ma_environment import ENV_NAME, MODE
 from tutorials.codes.multi_agents.rllib_ma_environment import ENV_CONFIG
 from tutorials.codes.multi_agents.rllib_ma_environment import MAX_TRAIN_ITERATIONS
 from tutorials.codes.multi_agents.rllib_ma_environment import EPISODE_REWARD_AVG_SOLVED
@@ -18,10 +18,9 @@ import gym
 
 class RAY_RL:
 	def __init__(
-			self, env_name, algorithm, ray_config, ray_agent, max_train_iterations, episode_reward_avg_solved, use_wandb
+			self, env_name, ray_config, ray_agent, max_train_iterations, episode_reward_avg_solved, use_wandb
 	):
 		self.env_name = env_name
-		self.algorithm = algorithm
 		self.ray_config = ray_config
 		self.ray_agent = ray_agent
 
@@ -54,10 +53,10 @@ class RAY_RL:
 				num_optimizations_policy_O += iter_result["info"]["learner"]["policy_X"]["num_agent_steps_trained"]
 
 
-			print_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
+			print_ttt_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
 
 			if self.use_wandb:
-				log_wandb(iter_result, num_optimizations)
+				log_ttt_wandb(self.wandb, iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
 
 			episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
 
@@ -78,8 +77,13 @@ if __name__ == "__main__":
 	ray_info = ray.init(local_mode=True)
 
 	ray_config, ray_agent = get_ray_config_and_ray_agent(
-		algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1
+		algorithm_policy_o=ALGORITHM_POLICY_O,
+		algorithm_policy_x=ALGORITHM_POLICY_X,
+		env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1
 	)
+
+	if MODE == 0:
+		ray_config.policies_to_train = ["policy_O"]
 
 	print("#" * 128)
 	print(ray_agent.get_policy(policy_id="policy_O").model)
@@ -92,7 +96,7 @@ if __name__ == "__main__":
 	print("ACTION SPACE: {0}".format(str(ray_agent.get_policy(policy_id="policy_X").action_space)))
 
 	ray_rl = RAY_RL(
-		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
+		env_name=ENV_NAME, ray_config=ray_config, ray_agent=ray_agent,
 		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_avg_solved=EPISODE_REWARD_AVG_SOLVED,
 		use_wandb=False
 	)

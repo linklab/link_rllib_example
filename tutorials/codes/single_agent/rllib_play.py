@@ -6,7 +6,7 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
 from tutorials.codes.single_agent.rllib_environment import ENV_NAME
-from tutorials.codes.multi_agents.rllib_environment import ENV_CONFIG
+from tutorials.codes.single_agent.rllib_environment import ENV_CONFIG
 from tutorials.codes.single_agent.rllib_train import get_ray_config_and_ray_agent
 
 
