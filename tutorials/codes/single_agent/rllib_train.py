@@ -32,7 +32,7 @@ class RAY_RL:
 
 		if self.use_wandb:
 			self.wandb = wandb.init(
-				project="DQN_{0}".format(self.env_name),
+				project="{0}_{0}".format(self.algorithm, self.env_name),
 				name=self.current_time,
 				config=ray_config
 			)
