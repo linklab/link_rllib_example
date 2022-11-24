@@ -43,11 +43,11 @@
 
 
 ########## CONTINUOUS ACTION - ENVIRONMENTS ##########
-# ENV_NAME = "MountainCarContinuous-v0"
-# MAX_TRAIN_ITERATIONS = 200
-# EPISODE_REWARD_AVG_SOLVED = 100.0
-# ENV_CONFIG = {}
-# RAY_CONFIG = {}
+ENV_NAME = "MountainCarContinuous-v0"
+MAX_TRAIN_ITERATIONS = 200
+EPISODE_REWARD_AVG_SOLVED = 100.0
+ENV_CONFIG = {}
+RAY_CONFIG = {}
 
 
 # ENV_NAME = "Pendulum-v1"
@@ -57,16 +57,16 @@
 # RAY_CONFIG = {}
 
 
-ENV_NAME = "BipedalWalker-v3"
-MAX_TRAIN_ITERATIONS = 1000
-EPISODE_REWARD_AVG_SOLVED = 250
-ENV_CONFIG = {}
-RAY_CONFIG = {
-    "lr": 0.0001,
-    "num_sgd_iter": 50,
-    "sgd_minibatch_size": 250,
-    "fcnet_hiddens": [512, 512]
-}
+# ENV_NAME = "BipedalWalker-v3"
+# MAX_TRAIN_ITERATIONS = 1000
+# EPISODE_REWARD_AVG_SOLVED = 250
+# ENV_CONFIG = {}
+# RAY_CONFIG = {
+#     "lr": 0.0001,
+#     "num_sgd_iter": 50,
+#     "sgd_minibatch_size": 250,
+#     "fcnet_hiddens": [512, 512]
+# }
 
 
 # ENV_NAME = "BipedalWalkerHardcore-v3"

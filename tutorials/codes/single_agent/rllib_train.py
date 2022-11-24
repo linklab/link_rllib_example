@@ -85,7 +85,7 @@ if __name__ == "__main__":
 		num_sgd_iter=RAY_CONFIG["num_sgd_iter"] if "lr" in RAY_CONFIG else ray_config.num_sgd_iter,
 		sgd_minibatch_size=RAY_CONFIG["sgd_minibatch_size"] if "lr" in RAY_CONFIG else ray_config.sgd_minibatch_size,
 	)
-	ray_config.model['fcnet_hiddens'] = RAY_CONFIG["fcnet_hiddens"] if "lr" in RAY_CONFIG else ray_config.fcnet_hiddens
+	ray_config.model['fcnet_hiddens'] = RAY_CONFIG["fcnet_hiddens"] if "fcnet_hiddens" in RAY_CONFIG else ray_config.model['fcnet_hiddens']
 
 	print(ray_agent.get_policy().model)
 	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy().observation_space)))
