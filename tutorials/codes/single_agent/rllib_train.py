@@ -41,33 +41,36 @@ class RAY_RL:
 		num_optimizations = 0
 
 		for num_train in range(self.max_train_iterations):
-			iter_result = self.ray_agent.train()
+			try:
+				iter_result = self.ray_agent.train()
 
-			# from pprint import pprint
-			# pprint(iter_result)
-			if "num_agent_steps_trained" in iter_result["info"]:
-				num_optimizations += iter_result["info"]["num_agent_steps_trained"]
-			else:
-				if "default_policy" in iter_result["info"]["learner"]:
-					num_optimizations += iter_result["info"]["learner"]["default_policy"]["num_agent_steps_trained"]
+				# from pprint import pprint
+				# pprint(iter_result)
+				if "num_agent_steps_trained" in iter_result["info"]:
+					num_optimizations += iter_result["info"]["num_agent_steps_trained"]
 				else:
-					num_optimizations += 0
+					if "default_policy" in iter_result["info"]["learner"]:
+						num_optimizations += iter_result["info"]["learner"]["default_policy"]["num_agent_steps_trained"]
+					else:
+						num_optimizations += 0
 
-			print_iter_result(iter_result, num_optimizations)
+				print_iter_result(iter_result, num_optimizations)
 
-			if self.use_wandb:
-				log_wandb(self.wandb, iter_result, num_optimizations)
+				if self.use_wandb:
+					log_wandb(self.wandb, iter_result, num_optimizations)
 
-			episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
+				episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
 
-			if episode_reward_mean >= self.episode_reward_avg_solved and num_optimizations > 50_000:
-				checkpoint_path = ray_agent.save()
-				print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
-					iter_result["evaluation"]["episode_reward_mean"],
-					iter_result["evaluation"]["episodes_this_iter"]
-				))
-				print("*** Checkpoint at {0}".format(checkpoint_path))
-				break
+				if episode_reward_mean >= self.episode_reward_avg_solved and num_optimizations > 50_000:
+					checkpoint_path = ray_agent.save()
+					print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
+						iter_result["evaluation"]["episode_reward_mean"],
+						iter_result["evaluation"]["episodes_this_iter"]
+					))
+					print("*** Checkpoint at {0}".format(checkpoint_path))
+					break
+			except ValueError as e:
+				print(e, "--> ValueError")
 
 
 if __name__ == "__main__":
