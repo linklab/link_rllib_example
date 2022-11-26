@@ -139,7 +139,7 @@ if __name__ == "__main__":
 		env_name=ENV_NAME,
 		env_config=ENV_CONFIG,
 		custom_ray_config=CUSTOM_RAY_CONFIG,
-		num_workers=1
+		num_workers=0
 	)
 
 	pprint(ray_config)

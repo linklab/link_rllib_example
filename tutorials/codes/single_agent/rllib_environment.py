@@ -58,14 +58,12 @@
 
 # ENV_NAME = "Pendulum-v1"
 # MAX_TRAIN_ITERATIONS = 10000
-# EPISODE_REWARD_AVG_SOLVED = 0
+# EPISODE_REWARD_AVG_SOLVED = -100
 # NUM_EPISODES_EVALUATION = 3
 # ENV_CONFIG = {}
 # CUSTOM_RAY_CONFIG = {
 # 	"train_batch_size": 512,
 #     "vf_clip_param": 10.0,
-#     "num_workers": 0,
-#     "num_envs_per_worker": 20,
 #     "lambda": 0.1,
 #     "gamma": 0.95,
 #     "lr": 0.0003,
@@ -81,10 +79,14 @@ EPISODE_REWARD_AVG_SOLVED = 250
 NUM_EPISODES_EVALUATION = 3
 ENV_CONFIG = {}
 CUSTOM_RAY_CONFIG = {
-    # "lr": 0.0001,
-    # "num_sgd_iter": 50,
-    # "sgd_minibatch_size": 250,
-    # "fcnet_hiddens": [512, 512]
+    "train_batch_size": 512,
+    "vf_clip_param": 10.0,
+    "lambda": 0.1,
+    "gamma": 0.95,
+    "lr": 0.0003,
+    "sgd_minibatch_size": 64,
+    "num_sgd_iter": 6,
+    "observation_filter": "MeanStdFilter"
 }
 
 
