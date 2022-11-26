@@ -79,13 +79,13 @@ EPISODE_REWARD_AVG_SOLVED = 250
 NUM_EPISODES_EVALUATION = 3
 ENV_CONFIG = {}
 CUSTOM_RAY_CONFIG = {
-    "train_batch_size": 512,
+    "train_batch_size": 2400,
     "vf_clip_param": 10.0,
     "lambda": 0.1,
     "gamma": 0.95,
-    "lr": 0.0003,
-    "sgd_minibatch_size": 64,
-    "num_sgd_iter": 6,
+    "lr": 0.0001,
+    "sgd_minibatch_size": 1200,
+    "num_sgd_iter": 10,
     "grad_clip": 5.0
 }
 

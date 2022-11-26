@@ -59,22 +59,23 @@ class RAY_RL:
 			if self.use_wandb:
 				log_ttt_wandb(self.wandb, iter_result, num_optimizations_policy_O, num_optimizations_policy_X)
 
-			if MODE == 0:
-				episode_reward_mean = iter_result["evaluation"]["policy_reward_mean"]["policy_O"]
-			elif MODE == 1:
-				episode_reward_mean = iter_result["evaluation"]["policy_reward_mean"]["policy_X"]
-			elif MODE == 2 and MODE == 3:
-				episode_reward_mean = 10
-			else:
-				raise ValueError()
+			if ENV_CONFIG["mode"] in [0, 1]:
+				if ENV_CONFIG["mode"] == 0:
+					episode_reward_mean = iter_result["evaluation"]["policy_reward_mean"]["policy_O"]
+				else:
+					episode_reward_mean = iter_result["evaluation"]["policy_reward_mean"]["policy_X"]
 
-			if episode_reward_mean >= self.episode_reward_avg_solved:
-				checkpoint_path = ray_agent.save()
-				print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
-					episode_reward_mean, iter_result["evaluation"]["episodes_this_iter"]
-				))
-				print("*** Checkpoint at {0}".format(checkpoint_path))
-				break
+				if episode_reward_mean >= self.episode_reward_avg_solved:
+					checkpoint_path = ray_agent.save()
+					print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
+						episode_reward_mean, iter_result["evaluation"]["episodes_this_iter"]
+					))
+					print("*** Checkpoint at {0}".format(checkpoint_path))
+					break
+
+		if ENV_CONFIG["mode"] == 2:
+			checkpoint_path = ray_agent.save()
+			print("*** Final Checkpoint at {0}".format(checkpoint_path))
 
 
 if __name__ == "__main__":
