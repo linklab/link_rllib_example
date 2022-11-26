@@ -12,7 +12,7 @@ from datetime import datetime
 from tutorials.codes.single_agent.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
 from tutorials.codes.single_agent.rllib_environment import (
-	ENV_NAME, CUSTOM_RAY_CONFIG, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED, NUM_EPISODES_EVALUATION
+	ENV_NAME, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED, NUM_EPISODES_EVALUATION
 )
 
 import gym
@@ -141,7 +141,6 @@ if __name__ == "__main__":
 		algorithm=ALGORITHM,
 		env_name=ENV_NAME,
 		env_config=ENV_CONFIG,
-		custom_ray_config=CUSTOM_RAY_CONFIG,
 		num_workers=0
 	)
 

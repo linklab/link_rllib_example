@@ -1,13 +1,13 @@
-def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_config, num_workers=1):
+def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1):
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQNConfig
         ray_config = DQNConfig()
-    elif algorithm == "PPO":
-        from ray.rllib.algorithms.ppo import PPOConfig
-        ray_config = PPOConfig()
     elif algorithm == "DDPG":
         from ray.rllib.algorithms.ddpg import DDPGConfig
         ray_config = DDPGConfig()
+    elif algorithm == "PPO":
+        from ray.rllib.algorithms.ppo import PPOConfig
+        ray_config = PPOConfig()
     elif algorithm == "SAC":
         from ray.rllib.algorithms.sac import SACConfig
         ray_config = SACConfig()
@@ -19,19 +19,26 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_con
     ray_config.env_config = env_config
 
     ray_config = ray_config.to_dict()
-    ray_config.update(custom_ray_config)
 
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQN
+        from tutorials.codes.single_agent.rllib_environment import CUSTOM_RAY_CONFIG_DQN
+        ray_config.update(CUSTOM_RAY_CONFIG_DQN)
         ray_agent = DQN(ray_config, env_name)
-    elif algorithm == "PPO":
-        from ray.rllib.algorithms.ppo import PPO
-        ray_agent = PPO(ray_config, env_name)
     elif algorithm == "DDPG":
         from ray.rllib.algorithms.ddpg import DDPG
+        from tutorials.codes.single_agent.rllib_environment import CUSTOM_RAY_CONFIG_DDPG
+        ray_config.update(CUSTOM_RAY_CONFIG_DDPG)
         ray_agent = DDPG(ray_config, env_name)
+    elif algorithm == "PPO":
+        from ray.rllib.algorithms.ppo import PPO
+        from tutorials.codes.single_agent.rllib_environment import CUSTOM_RAY_CONFIG_PPO
+        ray_config.update(CUSTOM_RAY_CONFIG_PPO)
+        ray_agent = PPO(ray_config, env_name)
     elif algorithm == "SAC":
         from ray.rllib.algorithms.sac import SAC
+        from tutorials.codes.single_agent.rllib_environment import CUSTOM_RAY_CONFIG_SAC
+        ray_config.update(CUSTOM_RAY_CONFIG_SAC)
         ray_agent = SAC(ray_config, env_name)
     else:
         raise ValueError()
