@@ -6,9 +6,9 @@ import warnings
 warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-from tutorials.codes.multi_agents.rllib_ma_utils import get_ray_config_and_ray_agent
-from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM
-from tutorials.codes.multi_agents.rllib_ma_environment import ENV_NAME, ENV_CONFIG
+from tutorials.codes.multi_agents.rllib_ttt_utils import get_ray_config_and_ray_agent
+from tutorials.codes.multi_agents.rllib_ttt_algorithm import ALGORITHM
+from tutorials.codes.multi_agents.rllib_ttt_environment import ENV_NAME, ENV_CONFIG
 
 if __name__ == "__main__":
 	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_TicTacToe343_2022-11-26_01-39-21rq9_vbkw/checkpoint_000015"

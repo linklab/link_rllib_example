@@ -39,7 +39,9 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_con
     return ray_config, ray_agent
 
 
-def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_steps_avg, num_evaluation_episides):
+def print_iter_result(
+        iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_steps_avg, num_evaluation_episodes
+):
     prefix = "{0:>2}|episodes: {1:>3}|timesteps: {2:>7,}|opts.: {3:>6,d}".format(
         iter_result["training_iteration"], iter_result["episodes_total"],
         iter_result["timesteps_total"], int(optimizations)
@@ -50,7 +52,7 @@ def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg,
     )
 
     evaluation_episode_reward = "eval_epi_reward_mean(num, steps): {0:>8.2f}({1:>3}, {2:>8.2f})".format(
-        evaluation_episode_reward_avg, num_evaluation_episides, evaluation_episode_steps_avg
+        evaluation_episode_reward_avg, num_evaluation_episodes, evaluation_episode_steps_avg
     )
 
     if "default_policy" in iter_result["info"]["learner"]:

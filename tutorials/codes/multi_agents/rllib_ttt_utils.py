@@ -2,7 +2,7 @@ from gym import spaces
 from ray.rllib.policy.policy import PolicySpec
 
 
-def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1):
+def get_ttt_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_config, num_workers=1):
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQNConfig
         ray_config = DQNConfig()
@@ -16,8 +16,6 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1)
         raise ValueError()
 
     ray_config.framework_str = "torch"
-
-    ray_config.env = env_name
     ray_config.env_config = env_config
     ray_config.num_workers = num_workers
     ray_config.evaluation_interval = 1  # 평가를 위한 훈련 간격
@@ -42,28 +40,31 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, num_workers=1)
         else:
             raise ValueError()
 
-    ray_config.framework_str = "torch"
     ray_config.multi_agent(policies=policies, policy_mapping_fn=policy_mapping_fn)
     ray_config.disable_env_checking = True
-
     ray_config.policies_to_train = ["policy_O"]
+
+    ray_config = ray_config.to_dict()
+    ray_config.update(custom_ray_config)
 
     if algorithm == "DQN":
         from ray.rllib.algorithms.dqn import DQN
-        ray_agent = DQN(config=ray_config)
+        ray_agent = DQN(config=ray_config, env=env_name)
     elif algorithm == "PPO":
         from ray.rllib.algorithms.ppo import PPO
-        ray_agent = PPO(config=ray_config)
+        ray_agent = PPO(config=ray_config, env=env_name)
     elif algorithm == "SAC":
         from ray.rllib.algorithms.sac import SAC
-        ray_agent = SAC(config=ray_config)
+        ray_agent = SAC(config=ray_config, env=env_name)
     else:
         raise ValueError()
 
     return ray_config, ray_agent
 
 
-def print_ttt_iter_result(iter_result, num_optimizations_policy_O, num_optimizations_policy_X):
+def print_ttt_iter_result(
+        iter_result, num_optimizations_policy_O, num_optimizations_policy_X
+):
     prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts (policy_O).: {3:>6,d} | opts (policy_X).: {4:>6,d}".format(
         iter_result["training_iteration"], iter_result["episodes_total"], iter_result["timesteps_total"],
         int(num_optimizations_policy_O), int(num_optimizations_policy_X)

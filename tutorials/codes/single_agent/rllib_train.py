@@ -86,9 +86,8 @@ class RAY_RL:
 
 				if evaluation_episode_reward_mean >= self.episode_reward_mean_solved and num_optimizations > 50_000:
 					checkpoint_path = ray_agent.save()
-					print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
-						iter_result["evaluation"]["episode_reward_mean"],
-						iter_result["evaluation"]["episodes_this_iter"]
+					print("*** Solved with Evaluation Episodes Reward Mean (NUM, STEPS): {0:>8.2f} ({1:>3}, {2:>8.2f}).".format(
+						evaluation_episode_reward_mean, NUM_EPISODES_EVALUATION, evaluation_episode_steps_mean
 					))
 					print("*** Checkpoint at {0}".format(checkpoint_path))
 					break

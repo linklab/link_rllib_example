@@ -6,9 +6,11 @@ import ray
 import wandb
 from datetime import datetime
 
-from tutorials.codes.multi_agents.rllib_ma_utils import get_ray_config_and_ray_agent, print_ttt_iter_result, log_ttt_wandb
-from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM
-from tutorials.codes.multi_agents.rllib_ma_environment import (
+from tutorials.codes.multi_agents.rllib_ttt_utils import (
+	get_ttt_ray_config_and_ray_agent, print_ttt_iter_result, log_ttt_wandb
+)
+from tutorials.codes.multi_agents.rllib_ttt_algorithm import ALGORITHM
+from tutorials.codes.multi_agents.rllib_ttt_environment import (
 	ENV_NAME, CUSTOM_RAY_CONFIG, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED
 )
 
@@ -81,12 +83,13 @@ if __name__ == "__main__":
 
 	ray_info = ray.init(local_mode=True)
 
-	ray_config, ray_agent = get_ray_config_and_ray_agent(
-		algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1
+	ray_config, ray_agent = get_ttt_ray_config_and_ray_agent(
+		algorithm=ALGORITHM,
+		env_name=ENV_NAME,
+		env_config=ENV_CONFIG,
+		custom_ray_config=CUSTOM_RAY_CONFIG,
+		num_workers=0
 	)
-
-	if MODE == 0:
-		ray_config.policies_to_train = ["policy_O"]
 
 	print("#" * 128)
 	print(ray_agent.get_policy(policy_id="policy_O").model)
