@@ -84,6 +84,10 @@ class RAY_RL:
 						evaluation_episode_steps_mean
 					)
 
+				if (num_train + 1) % 100 == 0 and num_train != 0:
+					checkpoint_path = ray_agent.save()
+					print("*** Periodic Checkpoint at {0}".format(checkpoint_path))
+
 				if evaluation_episode_reward_mean >= self.episode_reward_mean_solved and num_optimizations > 50_000:
 					checkpoint_path = ray_agent.save()
 					print("*** Solved with Evaluation Episodes Reward Mean (NUM, STEPS): {0:>8.2f} ({1:>3}, {2:>8.2f}).".format(

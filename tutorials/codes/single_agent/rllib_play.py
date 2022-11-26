@@ -1,3 +1,4 @@
+import gym
 import ray
 import warnings
 
@@ -12,7 +13,6 @@ from tutorials.codes.single_agent.rllib_train import get_ray_config_and_ray_agen
 
 
 if __name__ == "__main__":
-	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-22_21-45-03qyo4z66z/checkpoint_000005"
 
 	ray_info = ray.init(local_mode=True, log_to_driver=True)
 
@@ -22,25 +22,34 @@ if __name__ == "__main__":
 		env_config=ENV_CONFIG,
 		custom_ray_config=CUSTOM_RAY_CONFIG
 	)
-	ray_agent.restore(checkpoint_path=CHECKPOINT_PATH)
+	# ray_agent.restore(
+	# 	checkpoint_path="/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-22_21-45-03qyo4z66z/checkpoint_000005"
+	# )
 
-	env = ray_agent.evaluation_workers.local_worker().env
+	env = gym.make(ENV_NAME)
 
 	for epsiode in range(3):
 		print("[[[ EPISODE: {0} ]]]".format(epsiode))
-		state = env.reset()
+		observation = env.reset()
 		env.render(mode="human")
+
+		episode_reward = 0.0
+		episode_steps = 0
+
 		done = False
-		cumulative_reward = 0
 
 		while not done:
-			action = ray_agent.compute_single_action(state, explore=False)
-			state, reward, done, _ = env.step(action)
-			cumulative_reward += reward
+			action = ray_agent.compute_single_action(observation, explore=False)
+			next_observation, reward, done, _ = env.step(action)
+
 			env.render(mode="human")
 
-		print("[EPISODE: {0}] - Cumulative Reward: {1:.2f}".format(
-			epsiode, cumulative_reward
+			episode_reward += reward
+			observation = next_observation
+			episode_steps += 1
+
+		print("[EPISODE: {0}] - Episode Reward: {1:.2f} (Steps: {2})".format(
+			epsiode, episode_reward, episode_steps
 		))
 		print()
 
