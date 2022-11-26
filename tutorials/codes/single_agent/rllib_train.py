@@ -20,7 +20,7 @@ import gym
 
 class RAY_RL:
 	def __init__(
-			self, env_name, algorithm, ray_config, ray_agent, max_train_iterations, episode_reward_avg_solved, use_wandb
+			self, env_name, algorithm, ray_config, ray_agent, max_train_iterations, episode_reward_mean_solved, use_wandb
 	):
 		self.env_name = env_name
 		self.algorithm = algorithm
@@ -28,7 +28,7 @@ class RAY_RL:
 		self.ray_agent = ray_agent
 
 		self.max_train_iterations = max_train_iterations
-		self.episode_reward_avg_solved = episode_reward_avg_solved
+		self.episode_reward_mean_solved = episode_reward_mean_solved
 		self.use_wandb = use_wandb
 
 		self.current_time = datetime.now().astimezone().strftime('%Y-%m-%d_%H-%M-%S')
@@ -62,16 +62,17 @@ class RAY_RL:
 				(
 					evaluation_episode_reward_min,
 					evaluation_episode_reward_max,
-					evaluation_episode_reward_avg,
-					evaluation_episode_length_list,
-					evaluation_episode_length_evg
+					evaluation_episode_reward_mean,
+					evaluation_episode_steps_list,
+					evaluation_episode_steps_mean
 				) = self.evaluate()
 
 				print_iter_result(
 					iter_result,
 					num_optimizations,
-					evaluation_episode_reward_avg,
-					evaluation_episode_length_evg
+					evaluation_episode_reward_mean,
+					evaluation_episode_steps_mean,
+					NUM_EPISODES_EVALUATION
 				)
 
 				if self.use_wandb:
@@ -79,11 +80,11 @@ class RAY_RL:
 						self.wandb,
 						iter_result,
 						num_optimizations,
-						evaluation_episode_reward_avg, evaluation_episode_reward_min, evaluation_episode_reward_max,
-						evaluation_episode_length_evg
+						evaluation_episode_reward_mean, evaluation_episode_reward_min, evaluation_episode_reward_max,
+						evaluation_episode_steps_mean
 					)
 
-				if evaluation_episode_reward_avg >= self.episode_reward_avg_solved and num_optimizations > 50_000:
+				if evaluation_episode_reward_mean >= self.episode_reward_mean_solved and num_optimizations > 50_000:
 					checkpoint_path = ray_agent.save()
 					print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
 						iter_result["evaluation"]["episode_reward_mean"],
@@ -96,7 +97,7 @@ class RAY_RL:
 
 	def evaluate(self):
 		evaluation_episode_reward_lst = []
-		evaluation_episode_length_lst = []
+		evaluation_episode_steps_lst = []
 
 		for i in range(NUM_EPISODES_EVALUATION):
 			episode_reward = 0.0
@@ -116,14 +117,14 @@ class RAY_RL:
 				episode_steps += 1
 
 			evaluation_episode_reward_lst.append(episode_reward)
-			evaluation_episode_length_lst.append(episode_steps)
+			evaluation_episode_steps_lst.append(episode_steps)
 
 		return (
 			min(evaluation_episode_reward_lst),
 			max(evaluation_episode_reward_lst),
 			np.average(evaluation_episode_reward_lst),
-			evaluation_episode_length_lst,
-			np.average(evaluation_episode_length_lst)
+			evaluation_episode_steps_lst,
+			np.average(evaluation_episode_steps_lst)
 		)
 
 
@@ -149,7 +150,7 @@ if __name__ == "__main__":
 
 	ray_rl = RAY_RL(
 		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
-		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_avg_solved=EPISODE_REWARD_AVG_SOLVED,
+		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_mean_solved=EPISODE_REWARD_AVG_SOLVED,
 		use_wandb=False
 	)
 

@@ -39,31 +39,31 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_con
     return ray_config, ray_agent
 
 
-def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg):
-    prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts.: {3:>6,d}".format(
+def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_steps_avg, num_evaluation_episides):
+    prefix = "{0:>2}|episodes: {1:>3}|timesteps: {2:>7,}|opts.: {3:>6,d}".format(
         iter_result["training_iteration"], iter_result["episodes_total"],
         iter_result["timesteps_total"], int(optimizations)
     )
 
-    episode_reward = "epi_reward_mean(length): {0:>7.2f}({1:>7.2f})".format(
-        iter_result["episode_reward_mean"], iter_result["episode_len_mean"]
+    episode_reward = "epi_reward_mean(num, steps): {0:>8.2f}({1:>3}, {2:>8.2f})".format(
+        iter_result["episode_reward_mean"], iter_result["episodes_total"], iter_result["episode_len_mean"]
     )
 
-    evaluation_episode_reward = "eval_epi_reward(length): {0:>7.2f}({1:>7.2f})".format(
-        evaluation_episode_reward_avg, evaluation_episode_length_evg
+    evaluation_episode_reward = "eval_epi_reward_mean(num, steps): {0:>8.2f}({1:>3}, {2:>8.2f})".format(
+        evaluation_episode_reward_avg, num_evaluation_episides, evaluation_episode_steps_avg
     )
 
     if "default_policy" in iter_result["info"]["learner"]:
         if 'mean_td_error' in iter_result["info"]["learner"]["default_policy"]:
-            loss = "avg. loss: {0:>7.2f}".format(
+            loss = "loss_mean: {0:>6.2f}".format(
                 iter_result["info"]["learner"]["default_policy"]["mean_td_error"]
             )
         else:
-            loss = "avg. loss: {0:>7.2f}".format(
+            loss = "loss_mean: {0:>6.2f}".format(
                 iter_result["info"]["learner"]["default_policy"]["learner_stats"]["total_loss"]
             )
     else:
-        loss = "avg. loss: N/A"
+        loss = "loss_mean: N/A"
 
     time = "time: {0:>6.2f} sec.".format(
         iter_result["time_total_s"]
