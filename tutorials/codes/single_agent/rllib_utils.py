@@ -16,8 +16,6 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_con
 
     ray_config.framework_str = "torch"
     ray_config.num_workers = num_workers
-    ray_config.evaluation_interval = 1  # 평가를 위한 훈련 간격
-    ray_config.evaluation_duration = 5  # 평가를 위한 에피소드 개수
     ray_config.env_config = env_config
 
     ray_config = ray_config.to_dict()
@@ -41,20 +39,18 @@ def get_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray_con
     return ray_config, ray_agent
 
 
-def print_iter_result(iter_result, optimizations):
+def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg):
     prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts.: {3:>6,d}".format(
         iter_result["training_iteration"], iter_result["episodes_total"],
         iter_result["timesteps_total"], int(optimizations)
     )
 
-    episode_reward = "epi_reward(mean/min/max): {0:>6.2f}/{1:>6.2f}/{2:>6.2f}".format(
-        iter_result["episode_reward_mean"], iter_result["episode_reward_min"],
-        iter_result["episode_reward_max"]
+    episode_reward = "epi_reward_mean(length): {0:>6.2f}({1:>5})".format(
+        iter_result["episode_reward_mean"], iter_result["episode_len_mean"]
     )
 
-    evaluation_episode_reward = "eval_epi_reward(mean/min/max): {0:>6.2f}/{1:>6.2f}/{2:>6.2f}".format(
-        iter_result["evaluation"]["episode_reward_mean"], iter_result["evaluation"]["episode_reward_min"],
-        iter_result["evaluation"]["episode_reward_max"]
+    evaluation_episode_reward = "eval_epi_reward(length): {0:>6.2f}({1:>6.2f})".format(
+        evaluation_episode_reward_avg, evaluation_episode_length_evg
     )
 
     if "default_policy" in iter_result["info"]["learner"]:
@@ -76,7 +72,7 @@ def print_iter_result(iter_result, optimizations):
     print("[{0}] {1}, {2}, {3}, {4}".format(prefix, episode_reward, evaluation_episode_reward, loss, time))
 
 
-def log_wandb(wandb, iter_result, optimizations):
+def log_wandb(wandb, iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg):
     log_dict = {
         "train": iter_result["training_iteration"],
         "episodes": iter_result["episodes_total"],
@@ -86,10 +82,8 @@ def log_wandb(wandb, iter_result, optimizations):
         "train/episode_reward_min": iter_result["episode_reward_min"],
         "train/episode_reward_max": iter_result["episode_reward_max"],
         "train/episode_length_mean": iter_result["episode_len_mean"],
-        "evaluation/episode_reward_mean": iter_result["evaluation"]["episode_reward_mean"],
-        "evaluation/episode_reward_min": iter_result["evaluation"]["episode_reward_min"],
-        "evaluation/episode_reward_max": iter_result["evaluation"]["episode_reward_max"],
-        "evaluation/episode_length_mean": iter_result["evaluation"]["episode_len_mean"],
+        "evaluation/episode_reward_mean": evaluation_episode_reward_avg,
+        "evaluation/episode_length_mean": evaluation_episode_length_evg,
     }
 
     if "default_policy" in iter_result["info"]["learner"]:

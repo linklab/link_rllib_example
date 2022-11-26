@@ -1,5 +1,6 @@
 import warnings
 from pprint import pprint
+import numpy as np
 
 warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -10,12 +11,12 @@ from datetime import datetime
 
 from tutorials.codes.single_agent.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
-from tutorials.codes.single_agent.rllib_environment import ENV_NAME, CUSTOM_RAY_CONFIG
-from tutorials.codes.single_agent.rllib_environment import ENV_CONFIG
-from tutorials.codes.single_agent.rllib_environment import MAX_TRAIN_ITERATIONS
-from tutorials.codes.single_agent.rllib_environment import EPISODE_REWARD_AVG_SOLVED
+from tutorials.codes.single_agent.rllib_environment import (
+	ENV_NAME, CUSTOM_RAY_CONFIG, ENV_CONFIG, MAX_TRAIN_ITERATIONS, EPISODE_REWARD_AVG_SOLVED, NUM_EPISODES_EVALUATION
+)
 
 import gym
+
 
 class RAY_RL:
 	def __init__(
@@ -39,6 +40,8 @@ class RAY_RL:
 				config=self.ray_config
 			)
 
+		self.test_env = gym.make(self.env_name)
+
 	def train_loop(self):
 		num_optimizations = 0
 
@@ -56,14 +59,23 @@ class RAY_RL:
 					else:
 						num_optimizations += 0
 
-				print_iter_result(iter_result, num_optimizations)
+				(
+					evaluation_episode_reward_lst,
+					evaluation_episode_reward_avg,
+					evaluation_episode_length_list,
+					evaluation_episode_length_evg
+				) = self.evaluate()
+
+				print_iter_result(
+					iter_result, num_optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg
+				)
 
 				if self.use_wandb:
-					log_wandb(self.wandb, iter_result, num_optimizations)
+					log_wandb(
+						self.wandb, iter_result, num_optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg
+					)
 
-				episode_reward_mean = iter_result["evaluation"]["episode_reward_mean"]
-
-				if episode_reward_mean >= self.episode_reward_avg_solved and num_optimizations > 50_000:
+				if evaluation_episode_reward_avg >= self.episode_reward_avg_solved and num_optimizations > 50_000:
 					checkpoint_path = ray_agent.save()
 					print("*** Solved with Evaluation Episodes Reward Mean: {0:>6.2f} ({1} Evaluation Episodes).".format(
 						iter_result["evaluation"]["episode_reward_mean"],
@@ -73,6 +85,37 @@ class RAY_RL:
 					break
 			except ValueError as e:
 				print(e, "--> ValueError")
+
+	def evaluate(self):
+		evaluation_episode_reward_lst = []
+		evaluation_episode_length_lst = []
+
+		for i in range(NUM_EPISODES_EVALUATION):
+			episode_reward = 0.0
+			episode_steps = 0
+
+			observation = self.test_env.reset()
+
+			done = False
+
+			while not done:
+				action = self.ray_agent.compute_single_action(observation, explore=False)
+
+				next_observation, reward, done, info = self.test_env.step(action)
+
+				episode_reward += reward
+				observation = next_observation
+				episode_steps += 1
+
+			evaluation_episode_reward_lst.append(episode_reward)
+			evaluation_episode_length_lst.append(episode_steps)
+
+		return (
+			evaluation_episode_reward_lst,
+			np.average(evaluation_episode_reward_lst),
+			evaluation_episode_length_lst,
+			np.average(evaluation_episode_length_lst)
+		)
 
 
 if __name__ == "__main__":
