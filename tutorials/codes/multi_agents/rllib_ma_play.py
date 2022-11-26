@@ -11,9 +11,9 @@ from tutorials.codes.multi_agents.rllib_ma_algorithm import ALGORITHM
 from tutorials.codes.multi_agents.rllib_ma_environment import ENV_NAME, ENV_CONFIG
 
 if __name__ == "__main__":
-	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-22_23-13-43541kn6x6/checkpoint_000005"
+	CHECKPOINT_PATH = "/Users/yhhan/ray_results/PPO_TicTacToe343_2022-11-26_01-39-21rq9_vbkw/checkpoint_000015"
 
-	ray_info = ray.init(local_mode=True, log_to_driver=True)
+	ray_info = ray.init(local_mode=True)
 
 	ray_config, ray_agent = get_ray_config_and_ray_agent(algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG)
 	ray_agent.restore(checkpoint_path=CHECKPOINT_PATH)
@@ -48,6 +48,7 @@ if __name__ == "__main__":
 				cumulative_reward['X'] += rewards['X']
 
 			env.render()
+			print(rewards)
 
 			if policy_id == "policy_O":
 				policy_id = "policy_X"

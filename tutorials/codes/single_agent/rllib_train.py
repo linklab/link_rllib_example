@@ -1,4 +1,6 @@
 import warnings
+from pprint import pprint
+
 warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
@@ -8,7 +10,7 @@ from datetime import datetime
 
 from tutorials.codes.single_agent.rllib_utils import get_ray_config_and_ray_agent, print_iter_result, log_wandb
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
-from tutorials.codes.single_agent.rllib_environment import ENV_NAME, RAY_CONFIG
+from tutorials.codes.single_agent.rllib_environment import ENV_NAME, CUSTOM_RAY_CONFIG
 from tutorials.codes.single_agent.rllib_environment import ENV_CONFIG
 from tutorials.codes.single_agent.rllib_environment import MAX_TRAIN_ITERATIONS
 from tutorials.codes.single_agent.rllib_environment import EPISODE_REWARD_AVG_SOLVED
@@ -34,7 +36,7 @@ class RAY_RL:
 			self.wandb = wandb.init(
 				project="{0}_{1}".format(self.algorithm, self.env_name),
 				name=self.current_time,
-				config=ray_config
+				config=self.ray_config
 			)
 
 	def train_loop(self):
@@ -80,15 +82,14 @@ if __name__ == "__main__":
 	ray_info = ray.init(local_mode=True)
 
 	ray_config, ray_agent = get_ray_config_and_ray_agent(
-		algorithm=ALGORITHM, env_name=ENV_NAME, env_config=ENV_CONFIG, num_workers=1
+		algorithm=ALGORITHM,
+		env_name=ENV_NAME,
+		env_config=ENV_CONFIG,
+		custom_ray_config=CUSTOM_RAY_CONFIG,
+		num_workers=1
 	)
 
-	ray_config.training(
-		lr=RAY_CONFIG["lr"] if "lr" in RAY_CONFIG else ray_config.lr,
-		num_sgd_iter=RAY_CONFIG["num_sgd_iter"] if "lr" in RAY_CONFIG else ray_config.num_sgd_iter,
-		sgd_minibatch_size=RAY_CONFIG["sgd_minibatch_size"] if "lr" in RAY_CONFIG else ray_config.sgd_minibatch_size,
-	)
-	ray_config.model['fcnet_hiddens'] = RAY_CONFIG["fcnet_hiddens"] if "fcnet_hiddens" in RAY_CONFIG else ray_config.model['fcnet_hiddens']
+	pprint(ray_config)
 
 	print(ray_agent.get_policy().model)
 	print("OBSERVATION SPACE: {0}".format(str(ray_agent.get_policy().observation_space)))
@@ -97,7 +98,7 @@ if __name__ == "__main__":
 	ray_rl = RAY_RL(
 		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
 		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_avg_solved=EPISODE_REWARD_AVG_SOLVED,
-		use_wandb=True
+		use_wandb=False
 	)
 
 	ray_rl.train_loop()

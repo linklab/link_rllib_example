@@ -3,28 +3,28 @@
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 500
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # ENV_NAME = "Taxi-v3"
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 10
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # ENV_NAME = "PongDeterministic-v0"
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 3
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # ENV_NAME = "Acrobot-v1"
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 250
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # from ray.tune import register_env
@@ -39,29 +39,40 @@
 #     "left_terminal_reward": 0.0,    # 왼쪽 종료 상태로 이동하는 행동 수행 시 받는 보상
 #     "right_terminal_reward": 1.0    # 오른쪽 종료 상태로 이동하는 행동 수행 시 받는 보상
 # }
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 ########## CONTINUOUS ACTION - ENVIRONMENTS ##########
-ENV_NAME = "MountainCarContinuous-v0"
-MAX_TRAIN_ITERATIONS = 200
-EPISODE_REWARD_AVG_SOLVED = 100.0
-ENV_CONFIG = {}
-RAY_CONFIG = {}
-
-
-# ENV_NAME = "Pendulum-v1"
-# MAX_TRAIN_ITERATIONS = 100
-# EPISODE_REWARD_AVG_SOLVED = 250
+# ENV_NAME = "MountainCarContinuous-v0"
+# MAX_TRAIN_ITERATIONS = 200
+# EPISODE_REWARD_AVG_SOLVED = 100.0
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
+
+
+ENV_NAME = "Pendulum-v1"
+MAX_TRAIN_ITERATIONS = 10000
+EPISODE_REWARD_AVG_SOLVED = 0
+ENV_CONFIG = {}
+CUSTOM_RAY_CONFIG = {
+	"train_batch_size": 512,
+    "vf_clip_param": 10.0,
+    "num_workers": 0,
+    "num_envs_per_worker": 20,
+    "lambda": 0.1,
+    "gamma": 0.95,
+    "lr": 0.0003,
+    "sgd_minibatch_size": 64,
+    "num_sgd_iter": 6,
+    "observation_filter": "MeanStdFilter"
+}
 
 
 # ENV_NAME = "BipedalWalker-v3"
 # MAX_TRAIN_ITERATIONS = 1000
 # EPISODE_REWARD_AVG_SOLVED = 250
 # ENV_CONFIG = {}
-# RAY_CONFIG = {
+# CUSTOM_RAY_CONFIG = {
 #     "lr": 0.0001,
 #     "num_sgd_iter": 50,
 #     "sgd_minibatch_size": 250,
@@ -73,14 +84,14 @@ RAY_CONFIG = {}
 # MAX_TRAIN_ITERATIONS = 3000
 # EPISODE_REWARD_AVG_SOLVED = 250
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # ENV_NAME = "CarRacing-v1"
 # MAX_TRAIN_ITERATIONS = 100
 # EPISODE_REWARD_AVG_SOLVED = 100
 # ENV_CONFIG = {}
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
 
 
 # from ray.rllib.env import Unity3DEnv
@@ -100,4 +111,4 @@ RAY_CONFIG = {}
 #   "no_graphics": False
 # 	"episode_horizon": 1000,
 # }
-# RAY_CONFIG = {}
+# CUSTOM_RAY_CONFIG = {}
