@@ -42,7 +42,15 @@ def get_ttt_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray
 
     ray_config.multi_agent(policies=policies, policy_mapping_fn=policy_mapping_fn)
     ray_config.disable_env_checking = True
-    ray_config.policies_to_train = ["policy_O"]
+
+    if env_config["mode"] == 0:
+        ray_config.policies_to_train = ["policy_O"]
+    elif env_config["mode"] == 1:
+        ray_config.policies_to_train = ["policy_X"]
+    elif env_config["mode"] == 2:
+        ray_config.policies_to_train = ["policy_O", "policy_X"]
+    else:
+        raise ValueError()
 
     ray_config = ray_config.to_dict()
     ray_config.update(custom_ray_config)
@@ -63,27 +71,27 @@ def get_ttt_ray_config_and_ray_agent(algorithm, env_name, env_config, custom_ray
 
 
 def print_ttt_iter_result(
-        iter_result, num_optimizations_policy_O, num_optimizations_policy_X
+        iter_result, num_optimizations_policy_O, num_optimizations_policy_X,
+        evaluation_episode_reward_policy_O_mean, evaluation_episode_reward_policy_X_mean
 ):
-    prefix = "{0:>2} | episodes: {1:>3} | timesteps: {2:>7,} | opts (policy_O).: {3:>6,d} | opts (policy_X).: {4:>6,d}".format(
-        iter_result["training_iteration"], iter_result["episodes_total"], iter_result["timesteps_total"],
-        int(num_optimizations_policy_O), int(num_optimizations_policy_X)
+    prefix = "{0:>2}|episodes: {1:>3}|timesteps: {2:>7,}|time: {3:>6.2f} sec.".format(
+        iter_result["training_iteration"], iter_result["episodes_total"], iter_result["timesteps_total"], iter_result["time_total_s"]
     )
 
-    episode_reward_policy_O = "epi_reward_mean: {0:>6.2f}".format(
-        iter_result["sampler_results"]["policy_reward_mean"]["policy_O"]
+    episode_reward_policy_O = "epi_reward_mean: {0:>6.2f}, opts: {1:>6,}".format(
+        iter_result["sampler_results"]["policy_reward_mean"]["policy_O"], int(num_optimizations_policy_O)
     )
 
-    episode_reward_policy_X = "epi_reward_mean: {0:>6.2f}".format(
-        iter_result["sampler_results"]["policy_reward_mean"]["policy_X"]
+    episode_reward_policy_X = "epi_reward_mean: {0:>6.2f}, opts: {1:>6,}".format(
+        iter_result["sampler_results"]["policy_reward_mean"]["policy_X"], int(num_optimizations_policy_X)
     )
 
     evaluation_episode_reward_policy_O = "eval_epi_reward_mean: {0:>6.2f}".format(
-        iter_result["evaluation"]["policy_reward_mean"]["policy_O"]
+        evaluation_episode_reward_policy_O_mean
     )
 
     evaluation_episode_reward_policy_X = "eval_epi_reward_mean: {0:>6.2f}".format(
-        iter_result["evaluation"]["policy_reward_mean"]["policy_X"]
+        evaluation_episode_reward_policy_X_mean
     )
 
     loss_policy_O = "avg. loss: N/A"
@@ -108,30 +116,27 @@ def print_ttt_iter_result(
                 iter_result["info"]["learner"]["policy_X"]["learner_stats"]["total_loss"]
             )
 
-
-    time = "time: {0:>6.2f} sec.".format(
-        iter_result["time_total_s"]
-    )
-
-    print("[{0}] [policy_O: {1}, {2}, {3}] [policy_X:{4}, {5}, {6}] {7}".format(
+    print("[{0}] [policy_O: {1}, {2}, {3}] [policy_X:{4}, {5}, {6}]".format(
         prefix,
         episode_reward_policy_O, evaluation_episode_reward_policy_O, loss_policy_O,
         episode_reward_policy_X, evaluation_episode_reward_policy_X, loss_policy_X,
-        time
     ))
 
 
-def log_ttt_wandb(wandb, iter_result, num_optimizations_policy_O, num_optimizations_policy_X):
+def log_ttt_wandb(
+        wandb, iter_result, num_optimizations_policy_O, num_optimizations_policy_X,
+        evaluation_episode_reward_policy_O_mean, evaluation_episode_reward_policy_X_mean
+):
     log_dict = {
         "train": iter_result["training_iteration"],
         "episodes": iter_result["episodes_total"],
         "timesteps": iter_result["timesteps_total"],
         "policy_O/optimizations": num_optimizations_policy_O,
         "policy_O/episode_reward_mean": iter_result["sampler_results"]["policy_reward_mean"]["policy_O"],
-        "policy_O/evaluation_episode_reward_mean": iter_result["evaluation"]["policy_reward_mean"]["policy_O"],
+        "policy_O/evaluation_episode_reward_mean": evaluation_episode_reward_policy_O_mean,
         "policy_X/optimizations": num_optimizations_policy_X,
         "policy_X/episode_reward_mean": iter_result["sampler_results"]["policy_reward_mean"]["policy_X"],
-        "policy_X/evaluation_episode_reward_mean": iter_result["evaluation"]["policy_reward_mean"]["policy_X"],
+        "policy_X/evaluation_episode_reward_mean": evaluation_episode_reward_policy_X_mean,
     }
 
     if "policy_O" in iter_result["info"]["learner"]:
@@ -147,4 +152,3 @@ def log_ttt_wandb(wandb, iter_result, num_optimizations_policy_O, num_optimizati
             log_dict["policy_X/loss"] = iter_result["info"]["learner"]["policy_X"]["learner_stats"]["total_loss"]
 
     wandb.log(log_dict)
-

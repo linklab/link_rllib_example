@@ -7,10 +7,11 @@ ENV_NAME = "TicTacToe343"
 MAX_TRAIN_ITERATIONS = 200
 EPISODE_REWARD_AVG_SOLVED = 1.0
 CUSTOM_RAY_CONFIG = {}
+NUM_EPISODES_EVALUATION = 3
 ENV_CONFIG = {
     "board_rows": 3,
     "board_cols": 4,
-    "mode": 0
+    "mode": 1
 }
 #######################################
 # mode
