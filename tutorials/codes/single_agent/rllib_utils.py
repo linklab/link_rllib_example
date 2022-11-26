@@ -54,6 +54,7 @@ def print_iter_result(
         iter_result["timesteps_total"], int(optimizations)
     )
 
+    # print(iter_result, "!!!!!!")
     episode_reward = "epi_reward_mean(num, steps): {0:>8.2f}({1:>3}, {2:>8.2f})".format(
         iter_result["episode_reward_mean"], iter_result["episodes_total"], iter_result["episode_len_mean"]
     )

@@ -121,14 +121,7 @@ CUSTOM_RAY_CONFIG_PPO = {
     "grad_clip": 5.0
 }
 CUSTOM_RAY_CONFIG_SAC = {
-    "target_entropy": "auto",
-    "train_batch_size": 256,
-    "num_steps_sampled_before_learning_starts": 256,
-    "optimization" : {
-        "actor_learning_rate": 0.0003,
-        "critic_learning_rate": 0.0003,
-        "entropy_learning_rate": 0.0003
-    },
+    "rollout_fragment_length": 1,
     "grad_clip": 5.0,
 }
 
