@@ -45,21 +45,21 @@ def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg,
         iter_result["timesteps_total"], int(optimizations)
     )
 
-    episode_reward = "epi_reward_mean(length): {0:>6.2f}({1:>5})".format(
+    episode_reward = "epi_reward_mean(length): {0:>7.2f}({1:>7.2f})".format(
         iter_result["episode_reward_mean"], iter_result["episode_len_mean"]
     )
 
-    evaluation_episode_reward = "eval_epi_reward(length): {0:>6.2f}({1:>6.2f})".format(
+    evaluation_episode_reward = "eval_epi_reward(length): {0:>7.2f}({1:>7.2f})".format(
         evaluation_episode_reward_avg, evaluation_episode_length_evg
     )
 
     if "default_policy" in iter_result["info"]["learner"]:
         if 'mean_td_error' in iter_result["info"]["learner"]["default_policy"]:
-            loss = "avg. loss: {0:>6.3f}".format(
+            loss = "avg. loss: {0:>7.2f}".format(
                 iter_result["info"]["learner"]["default_policy"]["mean_td_error"]
             )
         else:
-            loss = "avg. loss: {0:>6.3f}".format(
+            loss = "avg. loss: {0:>7.2f}".format(
                 iter_result["info"]["learner"]["default_policy"]["learner_stats"]["total_loss"]
             )
     else:
