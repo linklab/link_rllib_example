@@ -72,7 +72,10 @@ def print_iter_result(iter_result, optimizations, evaluation_episode_reward_avg,
     print("[{0}] {1}, {2}, {3}, {4}".format(prefix, episode_reward, evaluation_episode_reward, loss, time))
 
 
-def log_wandb(wandb, iter_result, optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg):
+def log_wandb(
+        wandb, iter_result, optimizations, evaluation_episode_reward_avg,
+        evaluation_episode_reward_min, evaluation_episode_reward_max, evaluation_episode_length_avg
+):
     log_dict = {
         "train": iter_result["training_iteration"],
         "episodes": iter_result["episodes_total"],
@@ -83,7 +86,9 @@ def log_wandb(wandb, iter_result, optimizations, evaluation_episode_reward_avg, 
         "train/episode_reward_max": iter_result["episode_reward_max"],
         "train/episode_length_mean": iter_result["episode_len_mean"],
         "evaluation/episode_reward_mean": evaluation_episode_reward_avg,
-        "evaluation/episode_length_mean": evaluation_episode_length_evg,
+        "evaluation/episode_reward_min": evaluation_episode_reward_min,
+        "evaluation/episode_reward_max": evaluation_episode_reward_max,
+        "evaluation/episode_length_mean": evaluation_episode_length_avg,
     }
 
     if "default_policy" in iter_result["info"]["learner"]:

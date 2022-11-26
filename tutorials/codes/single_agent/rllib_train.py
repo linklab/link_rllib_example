@@ -60,19 +60,27 @@ class RAY_RL:
 						num_optimizations += 0
 
 				(
-					evaluation_episode_reward_lst,
+					evaluation_episode_reward_min,
+					evaluation_episode_reward_max,
 					evaluation_episode_reward_avg,
 					evaluation_episode_length_list,
 					evaluation_episode_length_evg
 				) = self.evaluate()
 
 				print_iter_result(
-					iter_result, num_optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg
+					iter_result,
+					num_optimizations,
+					evaluation_episode_reward_avg,
+					evaluation_episode_length_evg
 				)
 
 				if self.use_wandb:
 					log_wandb(
-						self.wandb, iter_result, num_optimizations, evaluation_episode_reward_avg, evaluation_episode_length_evg
+						self.wandb,
+						iter_result,
+						num_optimizations,
+						evaluation_episode_reward_avg, evaluation_episode_reward_min, evaluation_episode_reward_max,
+						evaluation_episode_length_evg
 					)
 
 				if evaluation_episode_reward_avg >= self.episode_reward_avg_solved and num_optimizations > 50_000:
@@ -111,7 +119,8 @@ class RAY_RL:
 			evaluation_episode_length_lst.append(episode_steps)
 
 		return (
-			evaluation_episode_reward_lst,
+			min(evaluation_episode_reward_lst),
+			max(evaluation_episode_reward_lst),
 			np.average(evaluation_episode_reward_lst),
 			evaluation_episode_length_lst,
 			np.average(evaluation_episode_length_lst)
