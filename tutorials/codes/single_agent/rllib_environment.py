@@ -69,7 +69,7 @@
 #     "lr": 0.0003,
 #     "sgd_minibatch_size": 64,
 #     "num_sgd_iter": 6,
-#     "grad_clip": 10,
+#     "grad_clip": 5.0,
 #     "observation_filter": "MeanStdFilter"
 # }
 
@@ -87,7 +87,7 @@ CUSTOM_RAY_CONFIG = {
     "lr": 0.0003,
     "sgd_minibatch_size": 64,
     "num_sgd_iter": 6,
-    "grad_clip": 10,
+    "grad_clip": 5.0,
     "observation_filter": "MeanStdFilter"
 }
 
