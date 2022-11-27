@@ -79,15 +79,10 @@ EPISODE_REWARD_AVG_SOLVED = -100
 NUM_EPISODES_EVALUATION = 5
 ENV_CONFIG = {}
 CUSTOM_RAY_CONFIG_DQN = None
-CUSTOM_RAY_CONFIG_DDPG = {}
+CUSTOM_RAY_CONFIG_DDPG = {
+    "grad_clip": 5.0
+}
 CUSTOM_RAY_CONFIG_PPO = {
-	"train_batch_size": 512,
-    "vf_clip_param": 10.0,
-    "lambda": 0.1,
-    "gamma": 0.95,
-    "lr": 0.0003,
-    "sgd_minibatch_size": 64,
-    "num_sgd_iter": 6,
     "grad_clip": 5.0
 }
 CUSTOM_RAY_CONFIG_SAC = {
