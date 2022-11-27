@@ -83,6 +83,7 @@ CUSTOM_RAY_CONFIG_DDPG = {
     "grad_clip": 5.0
 }
 CUSTOM_RAY_CONFIG_PPO = {
+    "lambda": 0.1,
     "lr": 0.0003,
     "grad_clip": 5.0
 }
