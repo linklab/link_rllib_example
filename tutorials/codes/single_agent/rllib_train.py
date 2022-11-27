@@ -153,7 +153,7 @@ if __name__ == "__main__":
 	ray_rl = RAY_RL(
 		env_name=ENV_NAME, algorithm=ALGORITHM, ray_config=ray_config, ray_agent=ray_agent,
 		max_train_iterations=MAX_TRAIN_ITERATIONS, episode_reward_mean_solved=EPISODE_REWARD_AVG_SOLVED,
-		use_wandb=False
+		use_wandb=True
 	)
 
 	ray_rl.train_loop()

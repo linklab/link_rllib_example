@@ -73,57 +73,48 @@
 # CUSTOM_RAY_CONFIG_SAC = {}
 
 
-# ENV_NAME = "Pendulum-v1"
-# MAX_TRAIN_ITERATIONS = 10000
-# EPISODE_REWARD_AVG_SOLVED = -100
-# NUM_EPISODES_EVALUATION = 5
-# ENV_CONFIG = {}
-# CUSTOM_RAY_CONFIG_DQN = None
-# CUSTOM_RAY_CONFIG_DDPG = {}
-# CUSTOM_RAY_CONFIG_PPO = {
-# 	"train_batch_size": 512,
-#     "vf_clip_param": 10.0,
-#     "lambda": 0.1,
-#     "gamma": 0.95,
-#     "lr": 0.0003,
-#     "sgd_minibatch_size": 64,
-#     "num_sgd_iter": 6,
-#     "grad_clip": 5.0
-# }
-# CUSTOM_RAY_CONFIG_SAC = {
-#     "target_entropy": "auto",
-#     "train_batch_size": 256,
-#     "num_steps_sampled_before_learning_starts": 256,
-#     "optimization" : {
-#         "actor_learning_rate": 0.0003,
-#         "critic_learning_rate": 0.0003,
-#         "entropy_learning_rate": 0.0003
-#     },
-#     "grad_clip": 5.0,
-# }
-
-
-ENV_NAME = "BipedalWalker-v3"
-MAX_TRAIN_ITERATIONS = 20000
-EPISODE_REWARD_AVG_SOLVED = 250
-NUM_EPISODES_EVALUATION = 3
+ENV_NAME = "Pendulum-v1"
+MAX_TRAIN_ITERATIONS = 10000
+EPISODE_REWARD_AVG_SOLVED = -100
+NUM_EPISODES_EVALUATION = 5
 ENV_CONFIG = {}
 CUSTOM_RAY_CONFIG_DQN = None
 CUSTOM_RAY_CONFIG_DDPG = {}
 CUSTOM_RAY_CONFIG_PPO = {
-    "train_batch_size": 2400,
+	"train_batch_size": 512,
     "vf_clip_param": 10.0,
     "lambda": 0.1,
     "gamma": 0.95,
-    "lr": 0.0001,
-    "sgd_minibatch_size": 1200,
-    "num_sgd_iter": 10,
+    "lr": 0.0003,
+    "sgd_minibatch_size": 64,
+    "num_sgd_iter": 6,
     "grad_clip": 5.0
 }
 CUSTOM_RAY_CONFIG_SAC = {
-    "rollout_fragment_length": 1,
     "grad_clip": 5.0,
 }
+
+
+# ENV_NAME = "BipedalWalker-v3"
+# MAX_TRAIN_ITERATIONS = 20000
+# EPISODE_REWARD_AVG_SOLVED = 250
+# NUM_EPISODES_EVALUATION = 3
+# ENV_CONFIG = {}
+# CUSTOM_RAY_CONFIG_DQN = None
+# CUSTOM_RAY_CONFIG_DDPG = {}
+# CUSTOM_RAY_CONFIG_PPO = {
+#     "train_batch_size": 2400,
+#     "vf_clip_param": 10.0,
+#     "lambda": 0.1,
+#     "gamma": 0.95,
+#     "lr": 0.0001,
+#     "sgd_minibatch_size": 1200,
+#     "num_sgd_iter": 10,
+#     "grad_clip": 5.0
+# }
+# CUSTOM_RAY_CONFIG_SAC = {
+#     "grad_clip": 5.0,
+# }
 
 
 # ENV_NAME = "BipedalWalkerHardcore-v3"
