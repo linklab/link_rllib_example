@@ -6,9 +6,8 @@ warnings.simplefilter("ignore")
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 from tutorials.codes.single_agent.rllib_algorithm import ALGORITHM
-from tutorials.codes.single_agent.rllib_environment import (
-	ENV_NAME, CUSTOM_RAY_CONFIG, ENV_CONFIG
-)
+from tutorials.codes.single_agent.rllib_environment import ENV_NAME, ENV_CONFIG
+
 from tutorials.codes.single_agent.rllib_train import get_ray_config_and_ray_agent
 
 
@@ -19,12 +18,11 @@ if __name__ == "__main__":
 	ray_config, ray_agent = get_ray_config_and_ray_agent(
 		algorithm=ALGORITHM,
 		env_name=ENV_NAME,
-		env_config=ENV_CONFIG,
-		custom_ray_config=CUSTOM_RAY_CONFIG
+		env_config=ENV_CONFIG
 	)
-	# ray_agent.restore(
-	# 	checkpoint_path="/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-22_21-45-03qyo4z66z/checkpoint_000005"
-	# )
+	ray_agent.restore(
+		checkpoint_path="/Users/yhhan/ray_results/PPO_RandomWalk_2022-11-22_21-45-03qyo4z66z/checkpoint_000005"
+	)
 
 	env = gym.make(ENV_NAME)
 
